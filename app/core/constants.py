@@ -1,0 +1,3 @@
+API_PREFIX = "/api"
+NOTES_TAG = "notes"
+NOTE_TITLE_MAX_LEN = 255
