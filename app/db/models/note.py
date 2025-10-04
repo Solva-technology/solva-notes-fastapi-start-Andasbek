@@ -1,16 +1,39 @@
 from datetime import datetime
-from sqlalchemy import Boolean, DateTime, Integer, String
+
+from sqlalchemy import Boolean, DateTime, String, func
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.core.base import Base
+from app.core.constants import NOTE_TITLE_MAX_LEN
 
 
 class Note(Base):
-    __tablename__ = "notes"
 
-    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
-    title: Mapped[str] = mapped_column(String(255), nullable=False)
-    content: Mapped[str] = mapped_column(String, nullable=False)
-    is_public: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
-    is_completed: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
+    title: Mapped[str] = mapped_column(
+        String(NOTE_TITLE_MAX_LEN),
+        nullable=False,
+        index=True,
+    )
+    content: Mapped[str] = mapped_column(
+        String,
+        nullable=False,
+        server_default="",
+    )
+    is_public: Mapped[bool] = mapped_column(
+        Boolean,
+        nullable=False,
+        server_default="false",
+        index=True,
+    )
+    is_completed: Mapped[bool] = mapped_column(
+        Boolean,
+        nullable=False,
+        server_default="false",
+        index=True,
+    )
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=func.now(),
+        index=True,
+    )

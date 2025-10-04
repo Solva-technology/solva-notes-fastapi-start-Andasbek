@@ -1,6 +1,6 @@
-# app/api/endpoints/notes.py
-from fastapi import APIRouter, Depends, HTTPException, status
 from typing import List
+
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from app.api.schemas import NoteCreate, NoteRead, NoteUpdate
@@ -10,7 +10,7 @@ from app.core.db import get_db
 router = APIRouter(prefix="/notes", tags=[NOTES_TAG])
 
 @router.post("/", response_model=NoteRead, status_code=status.HTTP_201_CREATED)
-def create_note_endpoint(payload: NoteCreate, db: Session = Depends(get_db)):
+def create_note_endpoint(payload: NoteCreate, session: Session = Depends(get_db)):
     return {
         "id": 1,
         "title": payload.title,
@@ -21,7 +21,7 @@ def create_note_endpoint(payload: NoteCreate, db: Session = Depends(get_db)):
     }
 
 @router.get("/", response_model=List[NoteRead])
-def list_notes_endpoint(db: Session = Depends(get_db)):
+def list_notes_endpoint(session: Session = Depends(get_db)):
     return [{
         "id": 1,
         "title": "Sample",
@@ -32,7 +32,7 @@ def list_notes_endpoint(db: Session = Depends(get_db)):
     }]
 
 @router.get("/{note_id}", response_model=NoteRead)
-def get_note_endpoint(note_id: int, db: Session = Depends(get_db)):
+def get_note_endpoint(note_id: int, session: Session = Depends(get_db)):
     if note_id != 1:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Note not found")
     return {
@@ -45,7 +45,7 @@ def get_note_endpoint(note_id: int, db: Session = Depends(get_db)):
     }
 
 @router.patch("/{note_id}", response_model=NoteRead)
-def update_note_endpoint(note_id: int, payload: NoteUpdate, db: Session = Depends(get_db)):
+def update_note_endpoint(note_id: int, payload: NoteUpdate, session: Session = Depends(get_db)):
     if note_id != 1:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Note not found")
     return {
@@ -58,7 +58,7 @@ def update_note_endpoint(note_id: int, payload: NoteUpdate, db: Session = Depend
     }
 
 @router.delete("/{note_id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_note_endpoint(note_id: int, db: Session = Depends(get_db)):
+def delete_note_endpoint(note_id: int, session: Session = Depends(get_db)):
     if note_id != 1:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Note not found")
     return
